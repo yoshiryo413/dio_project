@@ -1,3 +1,4 @@
+import 'package:diopppp/providers/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,59 +16,31 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const DioApp(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
 
-  final String title;
-
+class DioApp extends ConsumerWidget {
+  const DioApp({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+        final posts =  ref.watch(postListProvider);
+    
+  return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text('Dio App'),
       ),
-      body: Center(
-        child: Column(
+      body:posts.when(data: (posts) => ListView.builder(
+      itemCount: posts.length,   
+      itemBuilder: (context, index) => 
+      Text(posts[index].title),), 
+      error: (error, stackTrace) => Text('Error: $error'), 
+      loading: () => const Center(child: CircularProgressIndicator()),),
 
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-
-            ElevatedButton(onPressed: () {
-              debugPrint('Hello, World!');
-            }, child: Text('API Request'))
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
