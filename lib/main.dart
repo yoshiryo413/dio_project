@@ -27,20 +27,27 @@ class DioApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-        final posts =  ref.watch(postListProvider);
+    final posts =  ref.watch(postListProvider);
     
   return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Dio App'),
       ),
-      body:posts.when(data: (posts) => ListView.builder(
+      body:posts.when(
+      skipLoadingOnRefresh: false,   
+      data: (posts) => ListView.builder(
       itemCount: posts.length,   
       itemBuilder: (context, index) => 
       Text(posts[index].title),), 
       error: (error, stackTrace) => Text('Error: $error'), 
       loading: () => const Center(child: CircularProgressIndicator()),),
-
+      floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        ref.invalidate(postListProvider);
+      },
+      child: const Icon(Icons.refresh),
+  ),
     );
   }
 }
