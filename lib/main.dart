@@ -21,33 +21,32 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class DioApp extends ConsumerWidget {
   const DioApp({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final posts = ref.watch(postListProvider);
 
-    final posts =  ref.watch(postListProvider);
-    
-  return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Dio App'),
       ),
-      body:posts.when(
-      skipLoadingOnRefresh: false,   
-      data: (posts) => ListView.builder(
-      itemCount: posts.length,   
-      itemBuilder: (context, index) => 
-      Text(posts[index].title),), 
-      error: (error, stackTrace) => Text('Error: $error'), 
-      loading: () => const Center(child: CircularProgressIndicator()),),
+      body: posts.when(
+        skipLoadingOnRefresh: false,
+        data: (posts) => ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (context, index) => Text(posts[index].title),
+        ),
+        error: (error, stackTrace) => Text('Error: $error'),
+        loading: () => const Center(child: CircularProgressIndicator()),
+      ),
       floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        ref.invalidate(postListProvider);
-      },
-      child: const Icon(Icons.refresh),
-  ),
+        onPressed: () {
+          ref.invalidate(postListProvider);
+        },
+        child: const Icon(Icons.refresh),
+      ),
     );
   }
 }
